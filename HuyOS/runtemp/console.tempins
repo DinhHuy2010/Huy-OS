@@ -58,7 +58,7 @@ goto cmd
 echo -------------------------------------------------
 echo HuyOS
 echo Version: %version%
-echo Make by Dinh Huy
+echo Made by Dinh Huy
 echo -------------------------------------------------
 goto cmd
 :username
