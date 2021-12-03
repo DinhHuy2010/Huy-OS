@@ -1,0 +1,4 @@
+@echo off
+set dir=%~dp0
+ren %dir%console.bat console.systemfile
+exit

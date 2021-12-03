@@ -1,0 +1,147 @@
+@echo off
+:setvar
+set dir=%~dp0
+for /f %%a in ('type %dir%infocredit\version.credit') do set version=%%a
+for /f %%b in ('type %dir%user\userfile.user') do set user=%%b
+for /f %%c in ('type %dir%settings\colorsettings.settings') do set color=%%c
+goto setcmd
+:setcmd
+set help=help
+set shutdown=shutdown
+set restart=reboot
+set log=showlog
+set cmddate=date
+set cmdtime=time
+set about=about
+set username=username
+set colorchange=colorchange
+set changeusername=changeusername
+set clearscreen=clear
+goto start
+:start
+echo [Log: Date: %date%, Time: %time%]: System startup successfully.>> %dir%systemlog\systemlog.txt	
+mode con: cols=120 lines=30
+title HuyOS
+color %color%
+cls
+echo -------------------------------------------------
+echo              Welcome to HuyOS!
+echo              Version: %version%
+echo.
+echo               Welcome, %user%
+echo         Login Time: %date% at %time%
+echo           Type "help" to open help
+echo -------------------------------------------------
+goto cmd
+:cmd
+set cmd=""
+set /p cmd="main> "
+if %cmd% == %cmddate% goto date
+if %cmd% == %cmdtime% goto time
+if %cmd% == %about% goto about
+if %cmd% == %username% goto username
+if %cmd% == %colorchange% goto color
+if %cmd% == %changeusername% goto changeusername
+if %cmd% == %help% goto help
+if %cmd% == %shutdown% goto shutdown
+if %cmd% == %restart% goto restart
+if %cmd% == %clearscreen% goto clear
+echo Error!
+goto cmd
+:date
+echo Date: %date%
+goto cmd
+:time
+echo Time: %time%
+goto cmd
+:about
+echo -------------------------------------------------
+echo HuyOS
+echo Version: %version%
+echo Make by Dinh Huy
+echo -------------------------------------------------
+goto cmd
+:username
+echo Your username is: %user%
+goto cmd
+:color
+cls
+echo Pick your color for foreground.
+echo 1) Black       9) Gray
+echo 2) Blue        10) Light Blue
+echo 3) Green       11) Light Green
+echo 4) Aqua        12) Light Aqua
+echo 5) Red         13) Light Red
+echo 6) Purple      14) Light Purple
+echo 7) Yellow      15) Light Yellow
+echo 8) White       16) Bright White
+echo.
+set /p choicefore=Pick your option: 
+if %choicefore% == 1 set foreground=00 && goto setupcolor
+if %choicefore% == 2 set foreground=01 && goto setupcolor
+if %choicefore% == 3 set foreground=02 && goto setupcolor
+if %choicefore% == 4 set foreground=03 && goto setupcolor
+if %choicefore% == 5 set foreground=04 && goto setupcolor
+if %choicefore% == 6 set foreground=05 && goto setupcolor
+if %choicefore% == 7 set foreground=06 && goto setupcolor
+if %choicefore% == 8 set foreground=07 && goto setupcolor
+if %choicefore% == 9 set foreground=08 && goto setupcolor
+if %choicefore% == 10 set foreground=09 && goto setupcolor
+if %choicefore% == 11 set foreground=0a && goto setupcolor
+if %choicefore% == 12 set foreground=0b && goto setupcolor
+if %choicefore% == 13 set foreground=0c && goto setupcolor
+if %choicefore% == 14 set foreground=0d && goto setupcolor
+if %choicefore% == 15 set foreground=0e && goto setupcolor
+if %choicefore% == 16 set foreground=0f && goto setupcolor
+echo Error!
+pause
+goto color
+:setupcolor
+color %foreground%
+set /p colorsetcorrect=You like it (y/n)?: 
+if %colorsetcorrect% == y goto setcolorsettings
+if %colorsetcorrect% == n goto color
+:setcolorsettings
+echo %foreground%>> %dir%settings\colorsettings.settings
+echo [Log: Date: %date%, Time: %time%]: Color change saved. System restart.>> %dir%systemlog\systemlog.txt
+echo Color change successfully! Press any key to restart.
+pause > nul
+goto restart
+:changeusername
+set /p enteruser=Enter new user name: 
+echo %enteruser%>> %dir%user\userfile.user
+echo [Log: Date: %date%, Time: %time%]: Username change sucessfully. System restart.>> %dir%systemlog\systemlog.txt
+echo User name change sucessfully! System will restart now.
+timeout 3 /nobreak > nul
+goto restart
+:help
+echo -------------------------------------------------
+echo Type %help% to open help
+echo Type %cmddate% to show date
+echo Type %cmdtime% to show time
+echo Type %about% to open about
+echo Type %username% to show the username
+echo Type %colorchange% to Change colors.
+echo Type %changeusername% to change username
+echo Type %shutdown% to shutdown HuyOS
+echo Type %restart% to restart HuyOS
+echo Type %clearscreen% to clear the screen
+echo -------------------------------------------------
+goto cmd
+:shutdown
+echo [Log: Date: %date%, Time: %time%]: System shutdown.>> %dir%systemlog\systemlog.txt
+cls
+echo Shutting down...
+timeout 5 /nobreak > nul
+start %dir%reset.bat
+exit
+:restart
+echo [Log: Date: %date%, Time: %time%]: System restart.>> %dir%systemlog\systemlog.txt
+cls
+echo Restarting...
+timeout 5 /nobreak > nul
+start %dir%reset.bat
+start %dir%start.bat
+exit
+:clear
+goto start

@@ -1,0 +1,39 @@
+@echo off
+:del
+if exist install.bat del install.bat && goto del
+if not exist install.bat goto setvar
+:setvar
+set dir=%~dp0
+set defaltconfig=kernelboot.runcore(bootload)
+goto checkfolder
+:checkfolder
+echo Checking kernel, please wait...
+if not exist %dir%\bootkernel md bootkernel && goto checkfolder
+if exist %dir%\bootkernel goto kernelfile
+:kernelfile
+if exist %dir%\bootkernel\core.kernelboot goto config
+if not exist %dir%\bootkernel\core.kernelboot goto create
+:create
+echo %defaltconfig%> %dir%\bootkernel\core.kernelboot && goto kernelfile
+goto kernelfile
+:config
+for /f %%a in ('type %dir%\bootkernel\core.kernelboot') do set fileboot=%%a
+if %fileboot% == %defaltconfig% goto createboot
+if not %fileboot% == %defaltconfig% echo %defaltconfig%> %dir%\bootkernel\core.kernelboot
+goto kernelfile
+:createboot
+if not exist %dir%\bootfile\ md bootfile && goto createboot
+if exist %dir%\bootfile\ goto filecreate
+:filecreate
+if not exist %dir%\bootfile\boot.core echo bootfile.load()>> %dir%\bootfile\boot.core && goto createboot
+if exist %dir%\bootfile\boot.core goto boot
+:boot
+timeout 3 /nobreak > nul
+echo.
+echo Loading info system hardware...
+systeminfo
+echo Press any key to start the system.
+pause > nul
+ren %dir%console.systemfile console.bat
+start %dir%console.bat
+exit
